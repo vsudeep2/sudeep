@@ -2,10 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Sudeep - Interactive Terminal Portfolio</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+        :root {
+            --primary-color: #00ff41;
+            --secondary-color: #00ffff;
+            --error-color: #ff5f56;
+            --warning-color: #ffbd2e;
+            --highlight-color: #ff6b35;
+        }
 
         * {
             margin: 0;
@@ -13,16 +21,22 @@
             box-sizing: border-box;
         }
 
+        html {
+            font-size: clamp(12px, 1.5vw, 16px);
+        }
+
         body {
             background: #0a0a0a;
-            color: #00ff41;
+            color: var(--primary-color);
             font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
             min-height: 100vh;
             overflow: hidden;
             padding: 0;
             margin: 0;
             position: relative;
             transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* Hacker mode styles */
@@ -57,7 +71,7 @@
         /* Falling emojis for easter eggs */
         .falling-emoji {
             position: fixed;
-            font-size: 20px;
+            font-size: clamp(16px, 2vw, 20px);
             pointer-events: none;
             z-index: 9999;
             animation: fall 3s linear forwards;
@@ -81,17 +95,19 @@
             z-index: 9998;
         }
 
-        /* Snake game canvas styling */
+        /* Snake game canvas styling - responsive */
         #snakeGameCanvas {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             background: #000;
-            border: 3px solid #00ff41;
+            border: 3px solid var(--primary-color);
             border-radius: 8px;
             z-index: 10001;
             box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+            max-width: 90vw;
+            max-height: 90vh;
         }
 
         /* CRT Scan Lines Background Effect */
@@ -145,29 +161,35 @@
 
         .terminal-header {
             background: #333;
-            padding: 12px 20px;
+            padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 20px);
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid #555;
             flex-shrink: 0;
+            min-height: 40px;
         }
 
         .terminal-controls {
             display: flex;
-            gap: 8px;
+            gap: clamp(4px, 1vw, 8px);
         }
 
         .control-btn {
-            width: 14px;
-            height: 14px;
+            width: clamp(12px, 2vw, 14px);
+            height: clamp(12px, 2vw, 14px);
             border-radius: 50%;
             cursor: pointer;
             transition: transform 0.2s ease;
+            touch-action: manipulation;
         }
 
         .control-btn:hover {
             transform: scale(1.2);
+        }
+
+        .control-btn:active {
+            transform: scale(1.1);
         }
 
         .close { background: #ff5f56; }
@@ -176,22 +198,23 @@
 
         .terminal-title {
             color: #ccc;
-            font-size: 14px;
+            font-size: clamp(12px, 2vw, 14px);
             font-weight: 600;
         }
 
         .terminal-body {
             flex: 1;
-            padding: 20px;
+            padding: clamp(10px, 3vw, 20px);
             background: rgba(10, 10, 10, 0.8);
             overflow-y: auto;
             overflow-x: hidden;
             position: relative;
             scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
 
         .terminal-body::-webkit-scrollbar {
-            width: 8px;
+            width: clamp(4px, 1vw, 8px);
         }
 
         .terminal-body::-webkit-scrollbar-track {
@@ -209,35 +232,37 @@
 
         .ascii-container {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: clamp(15px, 4vw, 30px);
             opacity: 0;
             position: static;
         }
 
         .ascii-art {
-            font-size: 10px;
+            font-size: clamp(6px, 1.2vw, 10px);
             line-height: 1;
-            color: #00ff41;
+            color: var(--primary-color);
             white-space: pre;
             font-family: 'JetBrains Mono', monospace;
             text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
             position: static;
+            overflow: hidden;
+            word-break: break-all;
         }
 
         .ascii-title {
-            font-size: 16px;
-            color: #ff6b35;
-            margin-top: 20px;
+            font-size: clamp(12px, 2.5vw, 16px);
+            color: var(--highlight-color);
+            margin-top: clamp(10px, 3vw, 20px);
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: clamp(1px, 0.3vw, 3px);
             position: static;
         }
 
         .ascii-subtitle {
-            font-size: 12px;
-            color: #00ffff;
-            margin-top: 10px;
+            font-size: clamp(10px, 1.8vw, 12px);
+            color: var(--secondary-color);
+            margin-top: clamp(5px, 1.5vw, 10px);
             font-style: italic;
             position: static;
         }
@@ -275,17 +300,17 @@
         }
 
         .terminal-output {
-            margin-bottom: 20px;
+            margin-bottom: clamp(10px, 2vw, 20px);
         }
 
         .terminal-line {
-            margin-bottom: 10px;
+            margin-bottom: clamp(5px, 1vw, 10px);
             line-height: 1.4;
         }
 
         .prompt {
-            color: #00ff41;
-            margin-right: 8px;
+            color: var(--primary-color);
+            margin-right: clamp(4px, 1vw, 8px);
             font-weight: 600;
         }
 
@@ -295,38 +320,39 @@
 
         .command-output {
             color: #cccccc;
-            margin-left: 20px;
-            margin-bottom: 15px;
+            margin-left: clamp(10px, 2vw, 20px);
+            margin-bottom: clamp(8px, 1.5vw, 15px);
             line-height: 1.6;
             white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
         .highlight {
-            color: #ff6b35;
+            color: var(--highlight-color);
             font-weight: 600;
         }
 
         .accent {
-            color: #00ffff;
+            color: var(--secondary-color);
         }
 
         .success {
-            color: #00ff41;
+            color: var(--primary-color);
         }
 
         .warning {
-            color: #ffbd2e;
+            color: var(--warning-color);
         }
 
         .error {
-            color: #ff5f56;
+            color: var(--error-color);
         }
 
         .section-title {
-            color: #ff6b35;
-            font-size: 18px;
+            color: var(--highlight-color);
+            font-size: clamp(14px, 2.2vw, 18px);
             font-weight: 700;
-            margin: 20px 0 10px 0;
+            margin: clamp(10px, 2vw, 20px) 0 clamp(5px, 1vw, 10px) 0;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -334,13 +360,14 @@
         .skill-tag {
             display: inline-block;
             background: rgba(0, 255, 65, 0.1);
-            color: #00ff41;
-            padding: 4px 8px;
-            margin: 2px 4px 2px 0;
+            color: var(--primary-color);
+            padding: clamp(2px, 0.5vw, 4px) clamp(4px, 1vw, 8px);
+            margin: clamp(1px, 0.3vw, 2px) clamp(2px, 0.5vw, 4px) clamp(1px, 0.3vw, 2px) 0;
             border-radius: 4px;
-            font-size: 12px;
-            border: 1px solid #00ff41;
+            font-size: clamp(8px, 1.5vw, 12px);
+            border: 1px solid var(--primary-color);
             transition: all 0.3s ease;
+            touch-action: manipulation;
         }
 
         .skill-tag:hover {
@@ -351,12 +378,12 @@
         .input-line {
             display: flex;
             align-items: center;
-            margin-top: 10px;
+            margin-top: clamp(5px, 1vw, 10px);
             opacity: 0;
             transition: opacity 0.5s ease;
             position: static;
             background: rgba(10, 10, 10, 0.9);
-            padding: 10px 0;
+            padding: clamp(5px, 1vw, 10px) 0;
         }
 
         .input-line.active {
@@ -368,10 +395,11 @@
             border: none;
             color: #ffffff;
             font-family: inherit;
-            font-size: 16px;
+            font-size: clamp(12px, 2vw, 16px);
             outline: none;
             flex: 1;
-            caret-color: #00ff41;
+            caret-color: var(--primary-color);
+            touch-action: manipulation;
         }
 
         .terminal-input::selection {
@@ -379,8 +407,8 @@
         }
 
         .help-command {
-            color: #00ffff;
-            margin-right: 20px;
+            color: var(--secondary-color);
+            margin-right: clamp(10px, 2vw, 20px);
         }
 
         .help-description {
@@ -388,26 +416,27 @@
         }
 
         .contact-link {
-            color: #00ffff;
+            color: var(--secondary-color);
             text-decoration: none;
             transition: all 0.3s ease;
+            word-break: break-all;
         }
 
         .contact-link:hover {
-            color: #ff6b35;
-            text-shadow: 0 0 10px #ff6b35;
+            color: var(--highlight-color);
+            text-shadow: 0 0 10px var(--highlight-color);
         }
 
         /* Konami code indicator */
         .konami-indicator {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: clamp(10px, 2vw, 20px);
+            right: clamp(10px, 2vw, 20px);
             background: rgba(0, 255, 65, 0.1);
-            border: 1px solid #00ff41;
-            padding: 5px 10px;
+            border: 1px solid var(--primary-color);
+            padding: clamp(3px, 1vw, 5px) clamp(5px, 1.5vw, 10px);
             border-radius: 4px;
-            font-size: 12px;
+            font-size: clamp(8px, 1.5vw, 12px);
             opacity: 0;
             transition: opacity 0.3s ease;
             z-index: 9999;
@@ -417,23 +446,241 @@
             opacity: 1;
         }
 
-        @media (max-width: 768px) {
+        /* Large Desktop (1440px and up) */
+        @media (min-width: 1440px) {
+            .terminal-window {
+                max-width: 1400px;
+                max-height: 900px;
+                margin: auto;
+                border-radius: 10px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90vw;
+                height: 85vh;
+            }
+        }
+
+        /* Desktop (1024px - 1439px) */
+        @media (max-width: 1439px) and (min-width: 1024px) {
+            .ascii-art {
+                font-size: 10px;
+            }
+            .skill-tag {
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+        }
+
+        /* Tablet Landscape (768px - 1023px) */
+        @media (max-width: 1023px) and (min-width: 768px) {
             .terminal-body {
                 padding: 15px;
             }
+            .ascii-art {
+                font-size: 9px;
+            }
+            .skill-tag {
+                font-size: 11px;
+                padding: 3px 6px;
+            }
+            #snakeGameCanvas {
+                width: 350px;
+                height: 350px;
+            }
+        }
 
+        /* Tablet Portrait and Mobile Landscape (480px - 767px) */
+        @media (max-width: 767px) and (min-width: 480px) {
+            .terminal-body {
+                padding: 12px;
+            }
             .ascii-art {
                 font-size: 8px;
             }
-
-            .input-line {
-                padding: 5px 0;
-            }
-
             .skill-tag {
                 font-size: 10px;
-                padding: 3px 6px;
+                padding: 3px 5px;
+                margin: 2px 2px 2px 0;
             }
+            .input-line {
+                padding: 8px 0;
+            }
+            #snakeGameCanvas {
+                width: 300px;
+                height: 300px;
+            }
+        }
+
+        /* Mobile Portrait (up to 479px) */
+        @media (max-width: 479px) {
+            .terminal-header {
+                padding: 8px 12px;
+                min-height: 35px;
+            }
+            .terminal-body {
+                padding: 8px;
+            }
+            .ascii-art {
+                font-size: 6px;
+                line-height: 0.9;
+            }
+            .ascii-title {
+                font-size: 12px;
+                margin-top: 8px;
+                letter-spacing: 1px;
+            }
+            .ascii-subtitle {
+                font-size: 9px;
+                margin-top: 6px;
+            }
+            .skill-tag {
+                font-size: 9px;
+                padding: 2px 4px;
+                margin: 1px 1px 1px 0;
+            }
+            .input-line {
+                padding: 6px 0;
+            }
+            .terminal-input {
+                font-size: 14px;
+            }
+            .command-output {
+                margin-left: 10px;
+                margin-bottom: 10px;
+            }
+            .control-btn {
+                width: 12px;
+                height: 12px;
+            }
+            #snakeGameCanvas {
+                width: 250px;
+                height: 250px;
+            }
+            .konami-indicator {
+                bottom: 10px;
+                right: 10px;
+                padding: 3px 6px;
+                font-size: 8px;
+            }
+        }
+
+        /* Very Small Mobile (up to 320px) */
+        @media (max-width: 320px) {
+            .terminal-body {
+                padding: 6px;
+            }
+            .ascii-art {
+                font-size: 5px;
+                line-height: 0.8;
+            }
+            .ascii-title {
+                font-size: 10px;
+            }
+            .ascii-subtitle {
+                font-size: 8px;
+            }
+            .skill-tag {
+                font-size: 8px;
+                padding: 1px 3px;
+            }
+            .command-output {
+                margin-left: 8px;
+                font-size: 11px;
+            }
+            #snakeGameCanvas {
+                width: 200px;
+                height: 200px;
+            }
+        }
+
+        /* Landscape orientation adjustments */
+        @media (orientation: landscape) and (max-height: 600px) {
+            .ascii-container {
+                margin-bottom: 15px;
+            }
+            .ascii-art {
+                font-size: clamp(4px, 1vw, 8px);
+            }
+            .terminal-body {
+                padding: clamp(5px, 2vw, 15px);
+            }
+        }
+
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .ascii-art {
+                text-rendering: optimizeLegibility;
+            }
+            .terminal-input {
+                font-smoothing: antialiased;
+                -webkit-font-smoothing: antialiased;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (pointer: coarse) {
+            .control-btn {
+                min-width: 24px;
+                min-height: 24px;
+            }
+            .skill-tag {
+                min-height: 24px;
+                padding: 4px 8px;
+            }
+            .terminal-input {
+                min-height: 24px;
+            }
+        }
+
+        /* Dark mode preference */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #000000;
+            }
+            .terminal-window {
+                background: rgba(10, 10, 10, 0.98);
+            }
+        }
+
+        /* Reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            body::before {
+                animation: none;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            body::before,
+            body::after,
+            #matrixCanvas,
+            #snakeGameCanvas,
+            .falling-emoji {
+                display: none !important;
+            }
+            .terminal-window {
+                position: static;
+                width: 100%;
+                height: auto;
+                box-shadow: none;
+                border: 1px solid #000;
+            }
+            .terminal-body {
+                overflow: visible;
+                height: auto;
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px) rotate(-1deg); }
+            75% { transform: translateX(5px) rotate(1deg); }
         }
     </style>
 </head>
@@ -504,7 +751,7 @@
 └─────────────────────────────────────┘
 `, 'color: #00ff41; font-family: monospace; font-size: 12px;');
 
-        // Snake Game Implementation
+        // Snake Game Implementation with responsive canvas
         function startSnakeGame() {
             if (document.getElementById('snakeGameCanvas')) {
                 addToOutput(`<div class="command-output"><span class="warning">Snake game is already running! Press ESC to exit the current game first.</span></div>`);
@@ -513,15 +760,33 @@
 
             const canvas = document.createElement('canvas');
             canvas.id = 'snakeGameCanvas';
-            canvas.width = 400;
-            canvas.height = 400;
+            
+            // Responsive canvas sizing
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            let canvasSize;
+            
+            if (screenWidth <= 320) {
+                canvasSize = 200;
+            } else if (screenWidth <= 480) {
+                canvasSize = 250;
+            } else if (screenWidth <= 768) {
+                canvasSize = 300;
+            } else if (screenWidth <= 1024) {
+                canvasSize = 350;
+            } else {
+                canvasSize = 400;
+            }
+            
+            canvas.width = canvasSize;
+            canvas.height = canvasSize;
             document.body.appendChild(canvas);
 
             const ctx = canvas.getContext('2d');
-            const gridSize = 20;
-            const tileCount = canvas.width / gridSize;
+            const gridSize = Math.max(10, canvasSize / 20);
+            const tileCount = Math.floor(canvas.width / gridSize);
 
-            let snake = [{x: 10, y: 10}];
+            let snake = [{x: Math.floor(tileCount/2), y: Math.floor(tileCount/2)}];
             let velocity = {x: 0, y: 0};
             let apple = {x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount)};
             let gameRunning = true;
@@ -564,7 +829,7 @@
                 }
 
                 draw();
-                setTimeout(gameLoop, 150);
+                setTimeout(gameLoop, Math.max(100, 200 - score * 5));
             }
 
             function draw() {
@@ -590,15 +855,21 @@
 
                 // Draw score
                 ctx.fillStyle = '#00ff41';
-                ctx.font = '16px JetBrains Mono';
-                ctx.fillText(`Score: ${score}`, 10, 25);
+                const fontSize = Math.max(12, canvasSize / 25);
+                ctx.font = `${fontSize}px JetBrains Mono`;
+                ctx.fillText(`Score: ${score}`, 10, fontSize + 5);
 
                 // Draw instructions if snake hasn't moved
                 if (velocity.x === 0 && velocity.y === 0) {
                     ctx.fillStyle = '#00ffff';
-                    ctx.font = '14px JetBrains Mono';
-                    ctx.fillText('Use arrow keys to move', canvas.width/2 - 80, canvas.height/2 + 40);
-                    ctx.fillText('Press ESC to exit', canvas.width/2 - 70, canvas.height/2 + 60);
+                    const instrFontSize = Math.max(10, canvasSize / 30);
+                    ctx.font = `${instrFontSize}px JetBrains Mono`;
+                    const text1 = 'Use arrow keys to move';
+                    const text2 = 'Press ESC to exit';
+                    const text1Width = ctx.measureText(text1).width;
+                    const text2Width = ctx.measureText(text2).width;
+                    ctx.fillText(text1, (canvas.width - text1Width) / 2, canvas.height/2 + 40);
+                    ctx.fillText(text2, (canvas.width - text2Width) / 2, canvas.height/2 + 60);
                 }
             }
 
@@ -610,16 +881,25 @@
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
                 ctx.fillStyle = '#ff0000';
-                ctx.font = 'bold 24px JetBrains Mono';
-                ctx.fillText('GAME OVER', canvas.width/2 - 70, canvas.height/2 - 20);
+                const gameOverFontSize = Math.max(16, canvasSize / 20);
+                ctx.font = `bold ${gameOverFontSize}px JetBrains Mono`;
+                const gameOverText = 'GAME OVER';
+                const gameOverWidth = ctx.measureText(gameOverText).width;
+                ctx.fillText(gameOverText, (canvas.width - gameOverWidth) / 2, canvas.height/2 - 20);
                 
                 ctx.fillStyle = '#00ff41';
-                ctx.font = '16px JetBrains Mono';
-                ctx.fillText(`Final Score: ${score}`, canvas.width/2 - 60, canvas.height/2 + 20);
+                const scoreFontSize = Math.max(12, canvasSize / 25);
+                ctx.font = `${scoreFontSize}px JetBrains Mono`;
+                const scoreText = `Final Score: ${score}`;
+                const scoreWidth = ctx.measureText(scoreText).width;
+                ctx.fillText(scoreText, (canvas.width - scoreWidth) / 2, canvas.height/2 + 20);
                 
                 ctx.fillStyle = '#ffff00';
-                ctx.font = '14px JetBrains Mono';
-                ctx.fillText('Press ESC to exit', canvas.width/2 - 70, canvas.height/2 + 50);
+                const exitFontSize = Math.max(10, canvasSize / 30);
+                ctx.font = `${exitFontSize}px JetBrains Mono`;
+                const exitText = 'Press ESC to exit';
+                const exitWidth = ctx.measureText(exitText).width;
+                ctx.fillText(exitText, (canvas.width - exitWidth) / 2, canvas.height/2 + 50);
             }
 
             function handleKeyPress(e) {
@@ -715,7 +995,7 @@
             }
         }
 
-        // Matrix Rain Effect
+        // Matrix Rain Effect with responsive sizing
         function startMatrixRain() {
             if (document.getElementById('matrixCanvas')) return;
             
@@ -728,7 +1008,7 @@
             canvas.height = window.innerHeight;
             
             const letters = 'アァイィウヴエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヰヱヲンabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            const fontSize = 16;
+            const fontSize = Math.max(10, Math.min(16, window.innerWidth / 100));
             const columns = Math.floor(canvas.width / fontSize);
             const drops = [];
             
@@ -1078,7 +1358,7 @@ Result: Delivered 15 major releases with 99.2% uptime
                 execute: () => {
                     return `<span class="section-title"># Get In Touch</span>
 
-<span class="accent">LinkedIn:</span> <a href="https://www.linkedin.com/in/19sv/" class="contact-link">https://www.linkedin.com/in/19sv/</a>
+<span class="accent">LinkedIn:</span> <a href="#" class="contact-link">linkedin.com/in/sudeep</a>
 <span class="accent">Email:</span> <a href="mailto:vsudeep2@gmail.com" class="contact-link">vsudeep2@gmail.com</a>
 <span class="accent">GitHub:</span> <a href="#" class="contact-link">github.com/sudeep</a>
 <span class="accent">Location:</span> <span class="success">Bengaluru</span>
@@ -1143,17 +1423,6 @@ ${commandHistory.map((cmd, index) => `${index + 1}. ${cmd}`).join('\n')}`;
                 }
             }
         };
-
-        // Add shake animation CSS
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-5px) rotate(-1deg); }
-                75% { transform: translateX(5px) rotate(1deg); }
-            }
-        `;
-        document.head.appendChild(style);
 
         async function animateASCIIArt() {
             return new Promise((resolve) => {
@@ -1254,12 +1523,31 @@ Type <span class="accent">'help'</span> to see available commands.</div>`);
             }, 500);
         }
 
+        // Responsive canvas resize handler
+        window.addEventListener('resize', function() {
+            const matrixCanvas = document.getElementById('matrixCanvas');
+            if (matrixCanvas) {
+                matrixCanvas.width = window.innerWidth;
+                matrixCanvas.height = window.innerHeight;
+            }
+        });
+
         window.addEventListener('load', () => {
             initializeTerminal();
         });
 
-        document.addEventListener('click', () => {
-            commandInput.focus();
+        // Improved focus management for mobile
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('canvas') && !e.target.closest('.control-btn')) {
+                commandInput.focus();
+            }
+        });
+
+        // Touch event handling for mobile devices
+        document.addEventListener('touchstart', function(e) {
+            if (!e.target.closest('canvas') && !e.target.closest('.control-btn')) {
+                commandInput.focus();
+            }
         });
 
         // Control buttons with easter egg interactions
@@ -1299,18 +1587,19 @@ Type <span class="accent">'help'</span> to see available commands.</div>`);
                 sparkle.style.animation = 'fadeOut 1s ease-out forwards';
                 document.body.appendChild(sparkle);
                 
-                const fadeOutStyle = document.createElement('style');
-                fadeOutStyle.textContent = `
-                    @keyframes fadeOut {
-                        0% { opacity: 1; transform: scale(1); }
-                        100% { opacity: 0; transform: scale(2) translateY(-20px); }
-                    }
-                `;
-                document.head.appendChild(fadeOutStyle);
-                
                 setTimeout(() => sparkle.remove(), 1000);
             }
         });
+
+        // Add CSS for fade out animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                0% { opacity: 1; transform: scale(1); }
+                100% { opacity: 0; transform: scale(2) translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
