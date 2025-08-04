@@ -142,12 +142,13 @@
             100% { transform: translateY(4px); }
         }
 
+        /* Terminal always full screen */
         .terminal-window {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100vw !important;
+            height: 100vh !important;
             background: rgba(26, 26, 26, 0.95);
             border-radius: 0;
             border: none;
@@ -390,15 +391,18 @@
             opacity: 1;
         }
 
+        /* FIXED: Proper thick cursor next to text */
         .terminal-input {
             background: transparent;
             border: none;
             color: #ffffff;
             font-family: inherit;
             font-size: clamp(12px, 2vw, 16px);
+            font-weight: 600;
             outline: none;
             flex: 1;
             caret-color: var(--primary-color);
+            caret-width: 3px; /* Firefox only - makes cursor thicker */
             touch-action: manipulation;
         }
 
@@ -444,21 +448,6 @@
 
         .konami-indicator.show {
             opacity: 1;
-        }
-
-        /* Large Desktop (1440px and up) */
-        @media (min-width: 1440px) {
-            .terminal-window {
-                max-width: 1400px;
-                max-height: 900px;
-                margin: auto;
-                border-radius: 10px;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 90vw;
-                height: 85vh;
-            }
         }
 
         /* Desktop (1024px - 1439px) */
@@ -1183,7 +1172,7 @@ Use arrow keys ↑↓ to navigate command history.`;
                 description: "Play a sound effect",
                 execute: () => {
                     try {
-                        const audio = new Audio('audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcAjyZz/LJ');
+                        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcAjyZz/LJ');
                         audio.play().catch(() => {});
                         return `<span class="success">🔊 Beep! Sound effect played!</span>
 <span class="accent">Note: Some browsers may block audio without user interaction.</span>`;
@@ -1502,7 +1491,7 @@ Type <span class="accent">'help'</span> to see available commands.</div>`);
             );
             
             if (matches.length === 1) {
-                commandInput.value = matches[0];
+                commandInput.value = matches;
             } else if (matches.length > 1) {
                 addToOutput(`<div class="command-output"><span class="accent">Available commands:</span> ${matches.join(', ')}</div>`);
             }
